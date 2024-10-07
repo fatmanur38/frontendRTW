@@ -11,11 +11,28 @@ const ItemType = {
 };
 
 const formatTime = (timeInSeconds) => {
-    if (timeInSeconds < 60) return `${timeInSeconds} sec`;
-    if (timeInSeconds >= 3600) return `${(timeInSeconds / 3600).toFixed(1)} hr`;
-    return `${Math.floor(timeInSeconds / 60)} min`;
-};
+    const hours = Math.floor(timeInSeconds / 3600);
+    const minutes = Math.floor((timeInSeconds % 3600) / 60);
+    const seconds = timeInSeconds % 60;
 
+    let result = '';
+
+    if (hours > 0) {
+        result += `${hours} ${hours === 1 ? 'hour' : 'hours'}`;
+    }
+
+    if (minutes > 0) {
+        if (result) result += ' '; // Add a space if hours are already added
+        result += `${minutes} ${minutes === 1 ? 'min' : 'mins'}`;
+    }
+
+    if (seconds > 0) {
+        if (result) result += ' '; // Add a space if hours or minutes are already added
+        result += `${seconds} ${seconds === 1 ? 'second' : 'seconds'}`;
+    }
+
+    return result || '0 seconds'; // Fallback to '0 seconds' if no time is provided
+};
 // Draggable question row component
 const DraggableQuestionRow = ({ question, index, moveQuestion, handleDeleteQuestion }) => {
     const [{ isDragging }, dragRef] = useDrag({

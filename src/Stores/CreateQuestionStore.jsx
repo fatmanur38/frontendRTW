@@ -63,7 +63,7 @@ const useQuestionStore = create((set) => ({
             console.log("Fetched questions:", response.data);
 
             // Update the questions array with the fetched data
-            set({ questions: response.data });
+            set({ questions: response.data.data });
         } catch (error) {
             console.error("Error fetching questions:", error);
         }

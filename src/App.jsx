@@ -2,6 +2,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import QuestionPackages from './components/QuestionPackages';
 import ManageQuestionPackages from './pages/QuestionManagePage';
 import EditSinglePackage from './components/EditSinglePackage';
+import InterviewList from './pages/InterviewListPage';
 
 function App() {
   return (
@@ -43,6 +44,7 @@ function App() {
             <Route path="/manage" element={<QuestionPackages />} />
             <Route path="/question-packages" element={<ManageQuestionPackages />} />
             <Route path="/manage/:id" element={<EditSinglePackage />} /> {/* Route for editing a single package */}
+            <Route path="/interview-list" element={<InterviewList />} />
           </Routes>
         </div>
       </div>

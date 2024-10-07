@@ -17,7 +17,7 @@ function QuestionPackages() {
         fetchQuestions,
     } = useQuestionStore();
 
-
+    console.log("QuestionPackages", questions);
     useEffect(() => {
 
         fetchQuestions();
