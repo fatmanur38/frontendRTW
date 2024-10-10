@@ -11,7 +11,7 @@ const EditQuestionPackageStore = create((set) => ({
     fetchQuestionPackageById: async (id) => {
         set({ isLoading: true });
         try {
-            const response = await axios.get(`http://localhost:4000/api/question-packages/${id}`);
+            const response = await axios.get(`http://localhost:4000/api/question-packages/${id}`, { withCredentials: true });
             set({ selectedPackage: response.data.data, isLoading: false });
         } catch (error) {
             set({ error: "Failed to fetch question package", isLoading: false });
@@ -52,13 +52,13 @@ const EditQuestionPackageStore = create((set) => ({
     savePackage: async (id, updatedPackage) => {
         set({ isLoading: true });
         try {
-            await axios.put(`http://localhost:4000/api/question-packages/${id}`, updatedPackage);
+            await axios.put(`http://localhost:4000/api/question-packages/${id}`, updatedPackage, { withCredentials: true });
             set({ isLoading: false });
         } catch (error) {
             set({ error: "Failed to update question package", isLoading: false });
         }
         console.log("OLDU AQ")
-        
+
     },
 }));
 

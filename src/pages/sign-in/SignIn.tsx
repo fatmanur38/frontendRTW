@@ -22,6 +22,7 @@ import {
 import ForgotPassword from './ForgotPassword';
 import getSignInTheme from './theme/getSignInTheme';
 import TemplateFrame from './TemplateFrame';
+import useAdminLoginStore from '../../Stores/AdminLoginStore';
 
 const Card = styled(MuiCard)(({ theme }) => ({
   display: 'flex',
@@ -55,6 +56,7 @@ const SignInContainer = styled(Stack)(({ theme }) => ({
 }));
 
 export default function SignIn() {
+  const { login } = useAdminLoginStore();
   const [mode, setMode] = React.useState<PaletteMode>('light');
   const [showCustomTheme, setShowCustomTheme] = React.useState(true);
   const defaultTheme = createTheme({ palette: { mode } });
@@ -108,24 +110,10 @@ export default function SignIn() {
       password: dataPassword,
     };
 
-    /*     try {
-          const apiUrl = import.meta.env.VITE_RENDER_HOST; // Fetch API URL from env variables
-          if (!apiUrl) throw new Error('API URL is not defined');
-    
-          const response = await axios.post(`${apiUrl}/login`, payload);
-    
-          // Assuming the response contains the token in response.data.token
-          const token = response.data.token;
-    
-          // Store the token in a cookie that expires in 1 day
-          Cookies.set('authorization', token, { expires: 1 / 24 });
-    
-          console.log('Token stored in cookie:', token);
-    
-        } catch (error) {
-          console.error('Error during login:', error);
-        } */
-    navigate('/')
+    // Call the store to login
+    login(payload);
+
+    navigate('/manage-question-packages');
 
   };
 

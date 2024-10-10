@@ -11,7 +11,7 @@ const useInterviewStore = create((set) => ({
         set({ isLoading: true });
         const apiURL = import.meta.env.VITE_API_URL; // Adjust to your API URL
         try {
-            const response = await axios.get(`${apiURL}/api/question-packages`);
+            const response = await axios.get(`${apiURL}/api/question-packages`, { withCredentials: true });
             set({ questionPackages: response.data.data, isLoading: false });
         } catch (error) {
             set({ error: 'Failed to fetch question packages', isLoading: false });
@@ -22,8 +22,8 @@ const useInterviewStore = create((set) => ({
     submitInterview: async (interviewData) => {
         const apiURL = import.meta.env.VITE_API_URL; // Adjust to your API URL
         try {
-            console.log("interviewData", interviewData)
-            await axios.post(`${apiURL}/api/interviews`, interviewData);
+            // send request with credentials
+            await axios.post(`${apiURL}/api/interviews`, interviewData, { withCredentials: true });
             alert('Interview created successfully!');
         } catch (error) {
             alert('Failed to create interview');
