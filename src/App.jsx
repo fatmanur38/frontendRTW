@@ -12,7 +12,9 @@ function App() {
       <Routes>
         {/* Public Routes */}
         <Route path="/signin" element={<SignIn />} />
-        <Route path="/candidate" element={<CandidateInterview />} />
+
+        {/* Candidate interview route */}
+        <Route path="/candidate/interview/:interviewLink" element={<CandidateInterview />} /> {/* Interview link route */}
 
         {/* Admin Routes with Admin Layout */}
         <Route element={<AdminLayout />}>

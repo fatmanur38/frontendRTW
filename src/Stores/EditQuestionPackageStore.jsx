@@ -7,7 +7,9 @@ const EditQuestionPackageStore = create((set) => ({
     newQuestion: { question: "", time: "" },
     isLoading: false,
     error: null,
+    
 
+    // Fetch a question package by ID
     fetchQuestionPackageById: async (id) => {
         set({ isLoading: true });
         try {
@@ -36,7 +38,7 @@ const EditQuestionPackageStore = create((set) => ({
             selectedPackage: {
                 ...state.selectedPackage,
                 questions: [
-                    ...state.selectedPackage.questions,
+                    ...(state.selectedPackage?.questions || []), // Eğer questions null/undefined ise boş bir dizi kullan
                     {
                         question: state.newQuestion.question,
                         time: parseInt(state.newQuestion.time, 10), // Convert time to integer
@@ -48,17 +50,21 @@ const EditQuestionPackageStore = create((set) => ({
         }));
     },
 
-    // Save updated package (PUT request)
-    savePackage: async (id, updatedPackage) => {
+    // Save or create a package (POST for new, PUT for existing)
+    savePackage: async (id, packageData) => {
         set({ isLoading: true });
         try {
-            await axios.put(`http://localhost:4000/api/question-packages/${id}`, updatedPackage, { withCredentials: true });
+            if (id === "new" || !id) {
+                // POST request to create a new package
+                await axios.post("http://localhost:4000/api/question-packages", packageData, { withCredentials: true });
+            } else {
+                // PUT request to update an existing package
+                await axios.put(`http://localhost:4000/api/question-packages/${id}`, packageData, { withCredentials: true });
+            }
             set({ isLoading: false });
         } catch (error) {
-            set({ error: "Failed to update question package", isLoading: false });
+            set({ error: "Failed to save question package", isLoading: false });
         }
-        console.log("OLDU AQ")
-
     },
 }));
 

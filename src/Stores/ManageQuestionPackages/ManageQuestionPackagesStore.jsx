@@ -12,7 +12,9 @@ const useQuestionPackageStore = create((set) => ({
     fetchQuestionPackages: async () => {
         set({ isLoading: true });
         const apiURL = import.meta.env.VITE_API_URL;
-  
+        console.log("API URL:", apiURL);
+        console.log(Cookies.get('adminToken'));
+
         try {
             const response = await axios.get(`${apiURL}/api/question-packages`, {
                 withCredentials: true,
@@ -29,10 +31,10 @@ const useQuestionPackageStore = create((set) => ({
     fetchQuestionPackageById: async (id) => {
         set({ isLoading: true });
         const apiURL = import.meta.env.VITE_API_URL;
-        const token = Cookies.get('adminToken'); // Use the correct token name
+
         try {
             const response = await axios.get(`${apiURL}/api/question-packages/${id}`, {
-                withCredentials: true, 
+                withCredentials: true,
 
             });
             set({ selectedPackage: response.data.data, isLoading: false });
@@ -49,9 +51,7 @@ const useQuestionPackageStore = create((set) => ({
         const token = Cookies.get('adminToken'); // Use the correct token name
         try {
             await axios.delete(`${apiURL}/api/question-packages/${id}`, {
-                headers: {
-                    Authorization: `Bearer ${token}` // Always prefix with 'Bearer'
-                }
+                withCredentials: true,
             });
             set({ isLoading: false });
             await useQuestionPackageStore.getState().fetchQuestionPackages(); // Refresh the list after deletion

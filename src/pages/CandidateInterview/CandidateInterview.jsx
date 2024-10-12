@@ -59,6 +59,22 @@ const CandidateInterview = () => {
         setProgress(progressPercentage);
     };
 
+    const captureVideoFrame = () => {
+        if (videoRef.current) {
+            const canvas = document.createElement('canvas');
+            canvas.width = videoRef.current.videoWidth;
+            canvas.height = videoRef.current.videoHeight;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(videoRef.current, 0, 0, canvas.width, canvas.height);
+
+            const imageDataURL = canvas.toDataURL('image/webp');
+            const a = document.createElement('a');
+            a.href = imageDataURL;
+            a.download = 'snapshot.webp';
+            a.click();
+        }
+    };
+
     const handleStartStopRecording = () => {
         if (!isRecording) {
             startRecording();

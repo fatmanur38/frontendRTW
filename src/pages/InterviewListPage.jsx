@@ -2,13 +2,10 @@ import React, { useEffect, useState } from 'react';
 import { FaTrash, FaPlus, FaQuestionCircle } from 'react-icons/fa';
 import { IoIosLink } from "react-icons/io";
 import useInterviewStore from '../Stores/InterviewListStore';
-import CreateInterviewPopup from '../components/CreateInterviewPopUp'; // Import the pop-up component
 import { useNavigate } from 'react-router-dom';
 import QuestionListPopup from '../components/QuestionListPopUp';
 
-
-const InterviewCard = ({ _id, title, totalCandidates, onHoldCandidates, isPublished, questions }) => {
-    console.log("questions", questions)
+const InterviewCard = ({ _id, title, totalCandidates, onHoldCandidates, isPublished, questions, interviewLink }) => {
     const navigate = useNavigate();
     const { deleteInterview } = useInterviewStore(); // Use the deleteInterview function
     const [isQuestionPopupOpen, setIsQuestionPopupOpen] = useState(false); // State to open/close question popup
@@ -31,6 +28,10 @@ const InterviewCard = ({ _id, title, totalCandidates, onHoldCandidates, isPublis
         setIsQuestionPopupOpen(true); // Open question popup
     };
 
+    const handleNavigateToCandidateInterview = () => {
+        navigate(`/candidate/interview/${interviewLink}`); // Navigate to candidate/interview + interviewLink
+    };
+
     return (
         <div className="border p-4 rounded-md shadow-md bg-white relative w-1/4 min-w-[300px] m-4">
             {/* Top Icons */}
@@ -38,7 +39,7 @@ const InterviewCard = ({ _id, title, totalCandidates, onHoldCandidates, isPublis
                 <FaQuestionCircle className="text-gray-400 cursor-pointer" onClick={handleOpenQuestions} />
                 <div className="flex space-x-2">
                     <FaTrash className="text-gray-400 cursor-pointer" onClick={handleDelete} />
-                    <IoIosLink className="text-gray-400 cursor-pointer" onClick={handleCopyLink} />
+                    <IoIosLink className="text-gray-400 cursor-pointer" onClick={handleNavigateToCandidateInterview} />
                 </div>
             </div>
 
@@ -80,19 +81,12 @@ const InterviewCard = ({ _id, title, totalCandidates, onHoldCandidates, isPublis
     );
 };
 
-
-
 const InterviewList = () => {
     const { interviews, fetchInterviews, isLoading, error } = useInterviewStore();
 
-    const [isPopupOpen, setIsPopupOpen] = useState(false); // Handle the pop-up state
-
-    const openPopup = () => setIsPopupOpen(true); // Open pop-up
-    const closePopup = () => setIsPopupOpen(false); // Close pop-up
-
     useEffect(() => {
         fetchInterviews(); // Fetch interviews when the component mounts
-    }, []);
+    }, [fetchInterviews]); // fetchInterviews function added to dependency array
 
     if (isLoading) return <p>Loading...</p>;
     if (error) return <p className="text-red-500">{error}</p>;
@@ -101,37 +95,27 @@ const InterviewList = () => {
         <div className="relative p-8 bg-gray-100 min-h-screen">
             <div className="flex justify-between items-center mb-6 relative">
                 <h1 className="text-2xl font-bold">Interview List</h1>
-
-                {/* Plus Icon to open the create interview popup */}
-                <button
-                    className="text-white bg-blue-500 hover:bg-blue-400 rounded-full p-3"
-                    onClick={openPopup}
-                >
-                    <FaPlus />
-                </button>
             </div>
 
             {/* Interview cards */}
-            {/* fetch the interviews after sending a request from pop up. */}
             <div className="flex flex-wrap justify-start">
-                {interviews.map((interview) => (
-                    <InterviewCard
-                        key={interview._id}
-                        _id={interview._id} // Pass the interview ID
-                        title={interview.title}
-                        totalCandidates={interview.questions.length}
-                        onHoldCandidates={interview.questions.filter(q => q.time > 30).length}
-                        isPublished={true} // Adjust the published status if needed
-                        questions={interview.questions}
-                    />
-                ))}
+                {Array.isArray(interviews) && interviews.length > 0 ? (
+                    interviews.map((interview) => (
+                        <InterviewCard
+                            key={interview._id}
+                            _id={interview._id} // Pass the interview ID
+                            title={interview.title}
+                            totalCandidates={interview.questions?.length || 0} // Safely access questions length
+                            onHoldCandidates={interview.questions?.filter(q => q.time > 30).length || 0} // Safely filter questions
+                            isPublished={interview.isPublished} // Adjust the published status if needed
+                            questions={interview.questions}
+                            interviewLink={interview.interviewLink} // Pass interviewLink to InterviewCard
+                        />
+                    ))
+                ) : (
+                    <p>No interviews found.</p>
+                )}
             </div>
-
-            <CreateInterviewPopup
-                isOpen={isPopupOpen}
-                closePopup={closePopup}
-                refreshInterviews={fetchInterviews} // Pass the fetchInterviews function
-            />
         </div>
     );
 };
