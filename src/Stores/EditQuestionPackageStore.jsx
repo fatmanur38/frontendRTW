@@ -7,9 +7,22 @@ const EditQuestionPackageStore = create((set) => ({
     newQuestion: { question: "", time: "" },
     isLoading: false,
     error: null,
-    
 
-    // Fetch a question package by ID
+
+    resetStore: () => set(() => ({
+        selectedPackage: {
+            _id: "", // Boş string
+            title: "", // Boş string
+            questionCount: 0, // 0 olarak sıfırlanacak
+            questions: [], // Boş dizi
+            __v: 0, // Sıfırlanabilir veya isteğe bağlı olarak tutulabilir
+        },
+        newQuestion: { question: "", time: "" },
+        isPopupOpen: false,
+        isLoading: false,
+        error: null,
+    })),
+
     fetchQuestionPackageById: async (id) => {
         set({ isLoading: true });
         try {

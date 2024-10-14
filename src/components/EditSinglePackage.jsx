@@ -80,6 +80,7 @@ const EditSinglePackage = () => {
     const {
         selectedPackage,
         fetchQuestionPackageById,
+        resetStore,
         isPopupOpen,
         openPopup,
         closePopup,
@@ -90,10 +91,12 @@ const EditSinglePackage = () => {
     } = EditQuestionPackageStore();
 
     useEffect(() => {
-        if (!isNewPackage) {
+        if (isNewPackage) {
+            resetStore();
+        } else {
             fetchQuestionPackageById(id);
         }
-    }, [id]);
+    }, [id, isNewPackage]);
 
     useEffect(() => {
         if (selectedPackage) {
