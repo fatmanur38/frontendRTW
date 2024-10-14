@@ -8,10 +8,25 @@ const EditQuestionPackageStore = create((set) => ({
     isLoading: false,
     error: null,
 
+
+    resetStore: () => set(() => ({
+        selectedPackage: {
+            _id: "", // Boş string
+            title: "", // Boş string
+            questionCount: 0, // 0 olarak sıfırlanacak
+            questions: [], // Boş dizi
+            __v: 0, // Sıfırlanabilir veya isteğe bağlı olarak tutulabilir
+        },
+        newQuestion: { question: "", time: "" },
+        isPopupOpen: false,
+        isLoading: false,
+        error: null,
+    })),
+
     fetchQuestionPackageById: async (id) => {
         set({ isLoading: true });
         try {
-            const response = await axios.get(`http://localhost:4000/api/question-packages/${id}`);
+            const response = await axios.get(`http://localhost:4000/api/question-packages/${id}`, { withCredentials: true });
             set({ selectedPackage: response.data.data, isLoading: false });
         } catch (error) {
             set({ error: "Failed to fetch question package", isLoading: false });
@@ -36,7 +51,7 @@ const EditQuestionPackageStore = create((set) => ({
             selectedPackage: {
                 ...state.selectedPackage,
                 questions: [
-                    ...state.selectedPackage.questions,
+                    ...(state.selectedPackage?.questions || []), // Eğer questions null/undefined ise boş bir dizi kullan
                     {
                         question: state.newQuestion.question,
                         time: parseInt(state.newQuestion.time, 10), // Convert time to integer
@@ -48,17 +63,21 @@ const EditQuestionPackageStore = create((set) => ({
         }));
     },
 
-    // Save updated package (PUT request)
-    savePackage: async (id, updatedPackage) => {
+    // Save or create a package (POST for new, PUT for existing)
+    savePackage: async (id, packageData) => {
         set({ isLoading: true });
         try {
-            await axios.put(`http://localhost:4000/api/question-packages/${id}`, updatedPackage);
+            if (id === "new" || !id) {
+                // POST request to create a new package
+                await axios.post("http://localhost:4000/api/question-packages", packageData, { withCredentials: true });
+            } else {
+                // PUT request to update an existing package
+                await axios.put(`http://localhost:4000/api/question-packages/${id}`, packageData, { withCredentials: true });
+            }
             set({ isLoading: false });
         } catch (error) {
-            set({ error: "Failed to update question package", isLoading: false });
+            set({ error: "Failed to save question package", isLoading: false });
         }
-        console.log("OLDU AQ")
-        
     },
 }));
 

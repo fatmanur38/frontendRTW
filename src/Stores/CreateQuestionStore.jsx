@@ -42,7 +42,10 @@ const useQuestionStore = create((set) => ({
         try {
             const response = await axios.post(
                 apiURL + "/api/question-packages",
-                dataToSave
+                dataToSave,
+                {
+                    withCredentials: true,
+                }
             );
             console.log("Response from server:", response.data._id);
 
@@ -59,11 +62,10 @@ const useQuestionStore = create((set) => ({
     fetchQuestions: async () => {
         const apiURL = import.meta.env.VITE_API_URL;
         try {
-            const response = await axios.get(apiURL + "/api/question-packages");
+            const response = await axios.get(apiURL + "/api/question-packages", { withCredentials: true });
             console.log("Fetched questions:", response.data);
 
-            // Update the questions array with the fetched data
-            set({ questions: response.data.data });
+            set({ questions: response.data });
         } catch (error) {
             console.error("Error fetching questions:", error);
         }

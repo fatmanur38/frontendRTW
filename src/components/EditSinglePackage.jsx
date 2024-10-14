@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { FaTrash, FaPlus } from "react-icons/fa";
 import { DndProvider, useDrag, useDrop } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import EditQuestionPackageStore from "../Stores/EditQuestionPackageStore";
+
 
 // Constants for DnD item types
 const ItemType = {
@@ -22,16 +23,16 @@ const formatTime = (timeInSeconds) => {
     }
 
     if (minutes > 0) {
-        if (result) result += ' '; // Add a space if hours are already added
+        if (result) result += ' ';
         result += `${minutes} ${minutes === 1 ? 'min' : 'mins'}`;
     }
 
     if (seconds > 0) {
-        if (result) result += ' '; // Add a space if hours or minutes are already added
+        if (result) result += ' ';
         result += `${seconds} ${seconds === 1 ? 'second' : 'seconds'}`;
     }
 
-    return result || '0 seconds'; // Fallback to '0 seconds' if no time is provided
+    return result || '0 seconds';
 };
 // Draggable question row component
 const DraggableQuestionRow = ({ question, index, moveQuestion, handleDeleteQuestion }) => {
@@ -73,9 +74,13 @@ const DraggableQuestionRow = ({ question, index, moveQuestion, handleDeleteQuest
 
 const EditSinglePackage = () => {
     const { id } = useParams();
+    const isNewPackage = id === "new";
+    const navigate = useNavigate();
+
     const {
         selectedPackage,
         fetchQuestionPackageById,
+        resetStore,
         isPopupOpen,
         openPopup,
         closePopup,
@@ -85,13 +90,23 @@ const EditSinglePackage = () => {
         savePackage,
     } = EditQuestionPackageStore();
 
+    useEffect(() => {
+        if (isNewPackage) {
+            resetStore();
+        } else {
+            fetchQuestionPackageById(id);
+        }
+    }, [id, isNewPackage]);
 
     useEffect(() => {
-        fetchQuestionPackageById(id);
-    }, [id]);
+        if (selectedPackage) {
+            setQuestions(selectedPackage.questions || []); // Eğer selectedPackage varsa, questions'ı güncelle
+        }
+    }, [selectedPackage]);
 
-    const [questions, setQuestions] = useState([]);
-    const [packageTitle, setPackageTitle] = useState(""); // Local state to handle the title
+
+    const [questions, setQuestions] = useState(isNewPackage ? [] : []);
+    const [packageTitle, setPackageTitle] = useState(isNewPackage ? "" : ""); // Empty title for new packages
 
 
     useEffect(() => {
@@ -105,6 +120,9 @@ const EditSinglePackage = () => {
         const [movedItem] = updatedQuestions.splice(fromIndex, 1);
         updatedQuestions.splice(toIndex, 0, movedItem);
         setQuestions(updatedQuestions);
+    };
+    const handleCancel = () => {
+        navigate("/manage-question-packages")
     };
 
     const handleSave = () => {
@@ -122,6 +140,7 @@ const EditSinglePackage = () => {
         };
 
         savePackage(id, updatedPackage); // Send updated package to the store's savePackage function
+        navigate("/manage-question-packages"); // Redirect to the question package list
     };
     const handleDeleteQuestion = (index) => {
         const updatedQuestions = [...questions];
@@ -132,64 +151,60 @@ const EditSinglePackage = () => {
     return (
         <DndProvider backend={HTML5Backend}>
             <div className="flex min-h-screen bg-gray-100 p-6">
-                {selectedPackage ? (
-                    <div className="w-full max-w-4xl mx-auto bg-white p-6 rounded-md shadow-md">
-                        {/* Editable Package Title and Plus Icon */}
-                        <div className="flex justify-between items-center mb-4">
-                            <input
-                                type="text"
-                                placeholder={selectedPackage.title} // Display current package title as placeholder
-                                value={packageTitle} // Bind input to local state
-                                onChange={(e) => setPackageTitle(e.target.value)} // Allow editing of the title
-                                className="block w-1/3 text-lg font-bold border-b-2 pl-3 py-2 rounded-md bg-gray-200"
-                            />
-                            <button
-                                className="ml-4 bg-emerald-500 hover:bg-emerald-400 text-white p-2 rounded-full"
-                                onClick={openPopup}
-                            >
-                                <FaPlus />
-                            </button>
-                        </div>
-
-                        {/* Drag and Drop Questions */}
-                        <table className="w-full cursor-pointer bg-white rounded-md shadow-md">
-                            <thead className="bg-gray-200">
-                                <tr>
-                                    <th className="p-2 text-left">Order</th>
-                                    <th className="p-2 text-left">Question</th>
-                                    <th className="p-2 text-left">Time</th>
-                                    <th className="p-2 text-left">Action</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {questions.map((question, index) => (
-                                    <DraggableQuestionRow
-                                        key={question._id}
-                                        question={question}
-                                        index={index}
-                                        moveQuestion={moveQuestion}
-                                        handleDeleteQuestion={() => handleDeleteQuestion(index)} // Pass the index
-                                    />
-                                ))}
-                            </tbody>
-                        </table>
-
-                        {/* Buttons */}
-                        <div className="mt-4 flex justify-between">
-                            <button className="bg-gray-400 text-white px-4 py-2 rounded-md">
-                                Cancel
-                            </button>
-                            <button
-                                className="bg-emerald-500 hover:bg-emerald-400 text-white px-4 py-2 rounded-md"
-                                onClick={handleSave}
-                            >
-                                Save
-                            </button>
-                        </div>
+                <div className="w-full max-w-4xl mx-auto bg-white p-6 rounded-md shadow-md">
+                    {/* Editable Package Title and Plus Icon */}
+                    <div className="flex justify-between items-center mb-4">
+                        <input
+                            type="text"
+                            placeholder={isNewPackage ? "New Package Title" : selectedPackage?.title} // Display current package title or default placeholder
+                            value={packageTitle} // Bind input to local state
+                            onChange={(e) => setPackageTitle(e.target.value)} // Allow editing of the title
+                            className="block w-1/3 text-lg font-bold border-b-2 pl-3 py-2 rounded-md bg-gray-200"
+                        />
+                        <button
+                            className="ml-4 bg-emerald-500 hover:bg-emerald-400 text-white p-2 rounded-full"
+                            onClick={openPopup}
+                        >
+                            <FaPlus />
+                        </button>
                     </div>
-                ) : (
-                    <p>No package found.</p>
-                )}
+
+                    {/* Drag and Drop Questions */}
+                    <table className="w-full cursor-pointer bg-white rounded-md shadow-md">
+                        <thead className="bg-gray-200">
+                            <tr>
+                                <th className="p-2 text-left">Order</th>
+                                <th className="p-2 text-left">Question</th>
+                                <th className="p-2 text-left">Time</th>
+                                <th className="p-2 text-left">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {questions.map((question, index) => (
+                                <DraggableQuestionRow
+                                    key={question._id || index} // Handle key for new and existing questions
+                                    question={question}
+                                    index={index}
+                                    moveQuestion={moveQuestion}
+                                    handleDeleteQuestion={() => handleDeleteQuestion(index)}
+                                />
+                            ))}
+                        </tbody>
+                    </table>
+
+                    {/* Buttons */}
+                    <div className="mt-4 flex justify-between">
+                        <button onClick={handleCancel} className="bg-gray-400 text-white px-4 py-2 rounded-md">
+                            Cancel
+                        </button>
+                        <button
+                            className="bg-emerald-500 hover:bg-emerald-400 text-white px-4 py-2 rounded-md"
+                            onClick={handleSave}
+                        >
+                            Save
+                        </button>
+                    </div>
+                </div>
             </div>
 
             {/* Pop-up Form */}

@@ -23,10 +23,7 @@ const useMeetingStore = create((set) => ({
 
         try {
             const response = await axios.post(url, meetingData, {
-                headers: {
-                    Authorization: `Bearer${apiKey}`,
-                    'Content-Type': 'application/json',
-                },
+                withCredentials: true,
             });
 
             set({ meetingData: response.data, loading: false });

@@ -1,5 +1,6 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { FaTrash, FaPen } from "react-icons/fa";
+import { IoMdAdd } from "react-icons/io";
 import useQuestionPackageStore from "../Stores/ManageQuestionPackages/ManageQuestionPackagesStore";
 import { useNavigate } from "react-router-dom";
 
@@ -13,7 +14,6 @@ const ManageQuestionPackages = () => {
     } = useQuestionPackageStore();
 
     const navigate = useNavigate();
-
 
     useEffect(() => {
         fetchQuestionPackages();
@@ -31,10 +31,21 @@ const ManageQuestionPackages = () => {
         navigate(`/manage/${id}`); // Navigate to the edit page
     };
 
+    // Handle add when IoMdAdd icon is clicked
+    const handleAdd = () => {
+        navigate("/manage/new"); // Navigate to a new page for adding a new package
+    };
+
     return (
         <div className="flex min-h-screen bg-gray-100">
             <div className="flex-1 p-6">
-                <h1 className="text-xl font-bold mb-4">Manage Question Package</h1>
+                <div className="flex justify-between items-center mb-6">
+                    <h1 className="text-xl font-bold mb-4">Manage Question Package</h1>
+                    <IoMdAdd
+                        className="text-4xl cursor-pointer hover:bg-gray-300"
+                        onClick={handleAdd} // Navigate to new package creation
+                    />
+                </div>
 
                 {isLoading && <p>Loading...</p>}
                 {error && <p className="text-red-500">{error}</p>}
