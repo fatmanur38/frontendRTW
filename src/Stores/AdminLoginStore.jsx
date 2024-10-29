@@ -17,8 +17,8 @@ const useAdminLoginStore = create((set) => ({
                 password: password, // Use the password from the form
             });
 
-                console.log("response:", response);
-            Cookies.set('adminToken', response.data.token, { expires: 1 }); // Expires in 7 days
+            console.log("response:", response);
+            Cookies.set('authToken', response.data.token, { expires: 1 }); // Expires in 7 days
 
             set({ email: '', password: '', error: '' }); // Clear the store state after login
         } catch (error) {

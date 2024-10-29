@@ -1,6 +1,5 @@
 import { create } from "zustand";
 import axios from "axios";
-import Cookies from "js-cookie"; // Import js-cookie
 
 const useQuestionPackageStore = create((set) => ({
     questionPackages: [],
@@ -12,9 +11,6 @@ const useQuestionPackageStore = create((set) => ({
     fetchQuestionPackages: async () => {
         set({ isLoading: true });
         const apiURL = import.meta.env.VITE_API_URL;
-        console.log("API URL:", apiURL);
-        console.log(Cookies.get('adminToken'));
-
         try {
             const response = await axios.get(`${apiURL}/api/question-packages`, {
                 withCredentials: true,
@@ -48,7 +44,6 @@ const useQuestionPackageStore = create((set) => ({
     deleteQuestionPackage: async (id) => {
         set({ isLoading: true });
         const apiURL = import.meta.env.VITE_API_URL;
-        const token = Cookies.get('adminToken'); // Use the correct token name
         try {
             await axios.delete(`${apiURL}/api/question-packages/${id}`, {
                 withCredentials: true,

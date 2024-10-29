@@ -23,55 +23,60 @@ const InterviewCard = ({ _id, title, totalCandidates, onHoldCandidates, isPublis
     };
 
     const handleNavigateToCandidateInterview = () => {
-        navigate(`/candidate/interview/${interviewLink}`); // Navigate to candidate/interview + interviewLink
+        navigate(`http:localhost:5174/interview/${interviewLink}`); // Navigate to candidate/interview + interviewLink
     };
 
     return (
-        <div className="border p-4 rounded-md shadow-md bg-white relative w-1/4 min-w-[300px] m-4">
-            {/* Top Icons */}
-            <div className="flex justify-between mb-2">
-                <FaQuestionCircle className="text-gray-400 cursor-pointer" onClick={handleOpenQuestions} />
-                <div className="flex space-x-2">
-                    <FaTrash className="text-gray-400 cursor-pointer" onClick={handleDelete} />
-                    <IoIosLink className="text-gray-400 cursor-pointer" onClick={handleNavigateToCandidateInterview} />
+        <>
+            <div className="border p-4 rounded-md shadow-md bg-light-green-100 relative w-1/4 min-w-[300px] min-h-[350px] m-4">
+                {/* Top Icons */}
+                <div className="flex justify-between mb-2">
+                    <FaQuestionCircle className="text-gray-400 cursor-pointer hover:text-gray-600" onClick={handleOpenQuestions} />
+                    <div className="flex space-x-2">
+                        <FaTrash className="text-gray-400 cursor-pointer hover:text-gray-600" onClick={handleDelete} />
+                        <IoIosLink className="text-gray-400 cursor-pointer hover:text-gray-600" onClick={handleNavigateToCandidateInterview} />
+                    </div>
                 </div>
-            </div>
 
-            {/* Title */}
-            <h2 className="text-xl font-bold mb-4">{title}</h2>
+                {/* Title with Border Below */}
+                <h2 className="text-xl font-bold mb-2" style={{ color: '#47A7A2' }}>{title}</h2>
+                <hr className="border-t-2  border-fuchsia-400 mb-2" />
+                <p className="text-lg font-semibold mb-4" style={{ color: '#47A7A2' }}>Candidates:</p>
 
-            {/* Candidate Info */}
-            <div className="bg-gray-100 p-4 rounded-md flex justify-around mb-4">
-                <div className="text-center">
-                    <p className="font-semibold">TOTAL</p>
-                    <p className="text-xl">{totalCandidates}</p>
+                {/* Candidate Info with Left Borders */}
+                <div className="bg-gray-100 p-4 rounded-md flex justify-around mb-4">
+                    <div className="text-center border-l-2 border-gray-300 pl-4">
+                        <p className="font-semibold text-gray-600">TOTAL</p>
+                        <p className="text-xl text-gray-800">{totalCandidates}</p>
+                    </div>
+                    <div className="text-center border-l-2 border-gray-300 pl-4">
+                        <p className="font-semibold text-gray-600">ON HOLD</p>
+                        <p className="text-xl text-gray-800">{onHoldCandidates}</p>
+                    </div>
                 </div>
-                <div className="text-center">
-                    <p className="font-semibold">ON HOLD</p>
-                    <p className="text-xl">{onHoldCandidates}</p>
+
+                {/* Bottom Section with Border Above */}
+                <hr className="border-t-2 border-gray-300 mb-4" />
+                <div className="flex justify-between items-center">
+                    <span className={`text-sm ${isPublished ? 'text-gray-600' : 'text-red-500'}`}>
+                        {isPublished ? "Published" : "Unpublished"}
+                    </span>
+                    <button
+                        className="text-gray-500 text-sm flex items-center hover:text-gray-700"
+                        onClick={handleNavigateToCandidateInterview}
+                    >
+                        See Videos &gt;
+                    </button>
                 </div>
-            </div>
 
-            {/* Bottom Section */}
-            <div className="flex justify-between items-center">
-                <span className={`text-sm ${isPublished ? 'text-green-500' : 'text-red-500'}`}>
-                    {isPublished ? "Published" : "Unpublished"}
-                </span>
-                <button
-                    className="text-blue-500 text-sm flex items-center"
-                    onClick={handleNavigateToCandidateInterview}
-                >
-                    See Videos &gt;
-                </button>
+                {/* Render the question list popup */}
+                <QuestionListPopup
+                    isOpen={isQuestionPopupOpen}
+                    closePopup={() => setIsQuestionPopupOpen(false)}
+                    questions={questions} // Pass the questions to the popup
+                />
             </div>
-
-            {/* Render the question list popup */}
-            <QuestionListPopup
-                isOpen={isQuestionPopupOpen}
-                closePopup={() => setIsQuestionPopupOpen(false)}
-                questions={questions} // Pass the questions to the popup
-            />
-        </div>
+        </>
     );
 };
 

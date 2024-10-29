@@ -1,6 +1,32 @@
 import React from 'react';
 import { FaTimes } from 'react-icons/fa';
 
+
+
+const formatTime = (timeInSeconds) => {
+    const hours = Math.floor(timeInSeconds / 3600);
+    const minutes = Math.floor((timeInSeconds % 3600) / 60);
+    const seconds = timeInSeconds % 60;
+
+    let result = '';
+
+    if (hours > 0) {
+        result += `${hours} ${hours === 1 ? 'hour' : 'hours'}`;
+    }
+
+    if (minutes > 0) {
+        if (result) result += ' ';
+        result += `${minutes} ${minutes === 1 ? 'min' : 'mins'}`;
+    }
+
+    if (seconds > 0) {
+        if (result) result += ' ';
+        result += `${seconds} ${seconds === 1 ? 'second' : 'seconds'}`;
+    }
+
+    return result || '0 seconds';
+};
+
 const QuestionListPopup = ({ isOpen, closePopup, questions }) => {
     if (!isOpen) return null; // Don't render if not open
 
@@ -19,7 +45,7 @@ const QuestionListPopup = ({ isOpen, closePopup, questions }) => {
                     {questions.map((question, index) => (
                         <div key={index} className="flex justify-between items-center bg-gray-100 p-4 rounded-lg shadow-sm">
                             <span>{question.question}</span>
-                            <span className="text-gray-500">{question.time} min</span>
+                            <span className="text-gray-500">{formatTime(question.time)}</span>
                         </div>
                     ))}
                 </div>

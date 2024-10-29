@@ -1,4 +1,3 @@
-// AddQuestionPopUp.jsx
 import React, { useState } from 'react';
 
 const AddQuestionPopUp = ({ isOpen, closePopup, addQuestionToInterview }) => {
@@ -13,13 +12,13 @@ const AddQuestionPopUp = ({ isOpen, closePopup, addQuestionToInterview }) => {
 
     const handleAddQuestion = () => {
         addQuestionToInterview(newQuestion);
-        setNewQuestion({ question: '', time: '' }); // Reset form
+        setNewQuestion({ question: '', time: '' }); 
         closePopup();
     };
 
     return isOpen ? (
         <div className="fixed inset-0 bg-gray-500 bg-opacity-75 flex justify-center items-center popup-background">
-            <div className="bg-white p-6 rounded-lg shadow-lg w-96">
+            <div className="bg-white p-6 rounded-lg shadow-lg min-w-[700px] min-h-[400px]">
                 <div className="flex justify-between items-center mb-4">
                     <h2 className="text-lg font-bold">Add Question</h2>
                     <button onClick={closePopup} className="text-xl font-bold">&times;</button>
@@ -29,7 +28,7 @@ const AddQuestionPopUp = ({ isOpen, closePopup, addQuestionToInterview }) => {
                     <label className="block text-sm font-semibold mb-1">Question</label>
                     <textarea
                         placeholder="Enter question"
-                        className="border p-2 rounded-md w-full"
+                        className="border p-2 rounded-md w-full h-32" 
                         value={newQuestion.question}
                         onChange={(e) => handleInputChange("question", e.target.value)}
                     />

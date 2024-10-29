@@ -210,7 +210,7 @@ const EditSinglePackage = () => {
             {/* Pop-up Form */}
             {isPopupOpen && (
                 <div className="fixed inset-0 bg-gray-500 bg-opacity-75 flex justify-center items-center">
-                    <div className="bg-white p-6 rounded-lg shadow-lg w-96">
+                    <div className="bg-white p-6 rounded-lg shadow-lg  min-w-[700px] min-h-[400px]">
                         <div className="flex justify-between items-center mb-4">
                             <h2 className="text-lg font-bold">Add Question</h2>
                             <button onClick={closePopup}>&times;</button>
