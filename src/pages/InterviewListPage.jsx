@@ -23,7 +23,7 @@ const InterviewList = () => {
             <div className="flex justify-between items-center mb-6 relative">
                 <h1 className="text-2xl font-bold">Interview List</h1>
                 <button
-                    className="text-white bg-emerald-500 hover:bg-emerald-400 rounded-full p-3 flex items-center"
+                    className="text-white bg-amber-300 hover:bg-amber-500 rounded-full p-3 flex items-center"
                     onClick={openPopup}
                 >
                     <IoMdAdd className="size-8 mr-2" />

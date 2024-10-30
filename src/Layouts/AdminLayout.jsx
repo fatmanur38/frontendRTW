@@ -33,7 +33,7 @@ const AdminLayout = () => {
                 {/* Header */}
                 <div className="flex justify-between items-center mb-4 border-b-2 border-gray-300 pb-4">
                     <h1 className="text-xl font-semibold">Remote-Tech Admin Page</h1>
-                    <button className="bg-emerald-500 hover:bg-emerald-400 text-white px-4 py-2 rounded-md">Log Out</button>
+                    <button className="bg-amber-300 hover:bg-amber-500 text-white px-4 py-2 rounded-md">Log Out</button>
                 </div>
 
                 {/* Outlet will render the nested routes */}

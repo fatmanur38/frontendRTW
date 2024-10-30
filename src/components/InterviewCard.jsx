@@ -27,23 +27,23 @@ const InterviewCard = ({ _id, title, totalCandidates, onHoldCandidates, isPublis
     return (
         <>
             <div
-                className="border-l-4 border-r-4 border-b-4 border-[#004d61] p-4 rounded-md shadow-md bg-[#80cbc4] relative w-1/4 min-w-[300px] min-h-[350px] m-4 transition-all duration-200 hover:border-[#00bcd4]"
+                className="border-l-4 border-r-4 border-b-4 p-4 rounded-xl shadow-md bg-[#ffffff] relative w-1/4 min-w-[300px] min-h-[320px] m-4 transition-all duration-200 "
             >
                 {/* Top Icons */}
                 <div className="flex justify-between mb-2">
-                    <FaQuestionCircle className="text-white cursor-pointer hover:text-[#00bcd4]" onClick={handleOpenQuestions} />
+                    <FaQuestionCircle className="text-black cursor-pointer hover:text-[#00bcd4]" onClick={handleOpenQuestions} />
                     <div className="flex space-x-2">
-                        <FaTrash className="text-white cursor-pointer hover:text-[#00bcd4]" onClick={handleDelete} />
-                        <IoIosLink className="text-white cursor-pointer hover:text-[#00bcd4]" onClick={handleNavigateToCandidateInterview} />
+                        <FaTrash className="text-black cursor-pointer hover:text-[#00bcd4]" onClick={handleDelete} />
+                        <IoIosLink className="text-black cursor-pointer hover:text-[#00bcd4]" onClick={handleNavigateToCandidateInterview} />
                     </div>
                 </div>
 
                 {/* Title with Border Below */}
-                <h2 className="text-xl font-bold mb-2 text-white">{title}</h2>
+                <h2 className="text-xl font-bold mb-2 text-black">{title}</h2>
                 <hr className="border-t-2 border-[#004d61] mb-2" />
 
                 {/* Candidate Info Section */}
-                <p className="text-lg font-semibold mb-4 text-white">Candidates:</p>
+                <p className="text-lg font-semibold mb-4 text-black">Candidates:</p>
                 <div className="bg-[#b2dfdb] p-4 rounded-md flex justify-around mb-4">
                     <div className="text-center border-l-2 border-[#004d61] pl-4">
                         <p className="font-semibold text-[#004d61]">TOTAL</p>
@@ -63,12 +63,12 @@ const InterviewCard = ({ _id, title, totalCandidates, onHoldCandidates, isPublis
                 />
 
                 {/* Bottom Section for Status and Action Button */}
-                <div className="absolute bottom-0 left-0 right-0 p-4 border-t-2 border-[#004d61] bg-[#80cbc4] flex justify-between items-center">
-                    <span className={`text-sm font-bold ${isPublished ? 'text-white' : 'text-[#d51c3f]'}`}>
+                <div className="absolute bottom-0 left-0 right-0 p-4 border-t-2 border-[#004d61] bg-[#ffffff] flex justify-between items-center">
+                    <span className={`text-sm font-bold ${isPublished ? 'text-black' : 'text-[#d51c3f]'}`}>
                         {isPublished ? "Published" : "Unpublished"}
                     </span>
                     <button
-                        className="text-white text-sm flex items-center font-semibold hover:text-[#00bcd4]"
+                        className="text-black text-sm flex items-center font-semibold hover:text-[#00bcd4]"
                         onClick={handleNavigateToCandidateInterview}
                     >
                         See Videos &gt;
