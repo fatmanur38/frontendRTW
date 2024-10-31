@@ -3,11 +3,13 @@ import { FaTrash, FaQuestionCircle } from 'react-icons/fa';
 import { IoIosLink } from 'react-icons/io';
 import { useNavigate } from 'react-router-dom';
 import useInterviewStore from '../Stores/InterviewListStore';
+import useInterviewCardStore from '../Stores/InterviewCardStore';
 import QuestionListPopup from './QuestionListPopUp';
 
 const InterviewCard = ({ _id, title, totalCandidates, onHoldCandidates, isPublished, questions, interviewLink }) => {
     const navigate = useNavigate();
     const { deleteInterview } = useInterviewStore();
+    const { getInterviewByLink } = useInterviewCardStore(); // Access getInterviewByLink action
     const [isQuestionPopupOpen, setIsQuestionPopupOpen] = useState(false);
 
     const handleDelete = () => {
@@ -20,15 +22,16 @@ const InterviewCard = ({ _id, title, totalCandidates, onHoldCandidates, isPublis
         setIsQuestionPopupOpen(true);
     };
 
-    const handleNavigateToCandidateInterview = () => {
-        navigate(`http:localhost:5174/interview/${interviewLink}`);
+    const handleNavigateToCandidateInterview = async () => {
+        // Fetch and log interview details by link
+        const userData = await getInterviewByLink(interviewLink);
+        console.log("User Data:", userData);
+        navigate('/video-collection', { state: { userData } });
     };
 
     return (
         <>
-            <div
-                className="border-l-4 border-r-4 border-b-4 p-4 rounded-xl shadow-md bg-[#ffffff] relative w-1/4 min-w-[300px] min-h-[320px] m-4 transition-all duration-200 "
-            >
+            <div className="border-l-4 border-r-4 border-b-4 p-4 rounded-xl shadow-md bg-[#ffffff] relative w-1/4 min-w-[300px] min-h-[320px] m-4 transition-all duration-200">
                 {/* Top Icons */}
                 <div className="flex justify-between mb-2">
                     <FaQuestionCircle className="text-black cursor-pointer hover:text-[#00bcd4]" onClick={handleOpenQuestions} />

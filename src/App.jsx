@@ -5,6 +5,7 @@ import EditSinglePackage from './components/EditSinglePackage';
 import InterviewList from './pages/InterviewListPage';
 import CandidateInterview from './pages/CandidateInterview/CandidateInterview';
 import AdminLayout from './Layouts/AdminLayout';
+import VideoCollection from './components/VideoCard';
 
 function App() {
   return (
@@ -21,6 +22,8 @@ function App() {
           <Route path="/manage-question-packages" element={<ManageQuestionPackages />} />
           <Route path="/manage/:id" element={<EditSinglePackage />} /> {/* Route for editing a single package */}
           <Route path="/interview-list" element={<InterviewList />} />
+          <Route path="/video-collection" element={<VideoCollection />} /> {/* New route for Video Collection */}
+
         </Route>
       </Routes>
     </Router>
