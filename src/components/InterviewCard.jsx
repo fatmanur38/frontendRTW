@@ -28,6 +28,10 @@ const InterviewCard = ({ _id, title, totalCandidates, onHoldCandidates, isPublis
         console.log("User Data:", userData);
         navigate('/video-collection', { state: { userData } });
     };
+    const handleCopyLink = () => {
+        navigator.clipboard.writeText(interviewLink);
+        alert('Link copied to clipboard');
+    };
 
     return (
         <>
@@ -37,7 +41,7 @@ const InterviewCard = ({ _id, title, totalCandidates, onHoldCandidates, isPublis
                     <FaQuestionCircle className="text-black cursor-pointer hover:text-[#00bcd4]" onClick={handleOpenQuestions} />
                     <div className="flex space-x-2">
                         <FaTrash className="text-black cursor-pointer hover:text-[#00bcd4]" onClick={handleDelete} />
-                        <IoIosLink className="text-black cursor-pointer hover:text-[#00bcd4]" onClick={handleNavigateToCandidateInterview} />
+                        <IoIosLink className="text-black cursor-pointer hover:text-[#00bcd4]" onClick={handleCopyLink} />
                     </div>
                 </div>
 
