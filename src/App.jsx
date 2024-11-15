@@ -5,7 +5,7 @@ import EditSinglePackage from './components/EditSinglePackage';
 import InterviewList from './pages/InterviewListPage';
 import CandidateInterview from './pages/CandidateInterview/CandidateInterview';
 import AdminLayout from './Layouts/AdminLayout';
-import VideoCollection from './components/VideoCard';
+import VideoCollection from './components/VideoCollection';
 
 function App() {
   return (
