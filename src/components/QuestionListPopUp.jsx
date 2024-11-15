@@ -1,8 +1,6 @@
 import React from 'react';
 import { FaTimes } from 'react-icons/fa';
 
-
-
 const formatTime = (timeInSeconds) => {
     const hours = Math.floor(timeInSeconds / 3600);
     const minutes = Math.floor((timeInSeconds % 3600) / 60);
@@ -27,7 +25,7 @@ const formatTime = (timeInSeconds) => {
     return result || '0 seconds';
 };
 
-const QuestionListPopup = ({ isOpen, closePopup, questions }) => {
+const QuestionListPopUp = ({ isOpen, closePopup, questions }) => {
     if (!isOpen) return null; // Don't render if not open
 
     return (
@@ -54,4 +52,4 @@ const QuestionListPopup = ({ isOpen, closePopup, questions }) => {
     );
 };
 
-export default QuestionListPopup;
+export default QuestionListPopUp;
