@@ -3,7 +3,7 @@ import { FaTrash, FaQuestionCircle } from 'react-icons/fa';
 import { IoIosLink } from 'react-icons/io';
 import { useNavigate } from 'react-router-dom';
 import useInterviewStore from '../Stores/InterviewListStore';
-import QuestionListPopup from './QuestionListPopUp';
+import QuestionListPopUp from './QuestionListPopUp';
 
 const InterviewCard = ({ _id, title, totalCandidates, onHoldCandidates, isPublished, questions, interviewLink }) => {
     const navigate = useNavigate();
@@ -56,7 +56,7 @@ const InterviewCard = ({ _id, title, totalCandidates, onHoldCandidates, isPublis
                 </div>
 
                 {/* Render the question list popup */}
-                <QuestionListPopup
+                <QuestionListPopUp
                     isOpen={isQuestionPopupOpen}
                     closePopup={() => setIsQuestionPopupOpen(false)}
                     questions={questions}
