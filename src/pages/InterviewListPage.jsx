@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { IoMdAdd } from 'react-icons/io';
 import useInterviewStore from '../Stores/InterviewListStore';
 import InterviewCard from '../components/InterviewCard';
-import CreateInterviewPopup from '../components/CreateInterviewPopup';
+import CreateInterviewPopup from '../components/CreateInterviewPopUp'
 
 const InterviewList = () => {
     const { interviews, fetchInterviews, isLoading, error } = useInterviewStore();

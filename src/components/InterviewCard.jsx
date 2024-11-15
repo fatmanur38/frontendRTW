@@ -3,7 +3,7 @@ import { FaTrash, FaQuestionCircle } from 'react-icons/fa';
 import { IoIosLink } from 'react-icons/io';
 import { useNavigate } from 'react-router-dom';
 import useInterviewStore from '../Stores/InterviewListStore';
-import QuestionListPopup from './QuestionListPopUp';
+import QuestionListPopup from './QuestionListPopup';
 
 const InterviewCard = ({ _id, title, totalCandidates, onHoldCandidates, isPublished, questions, interviewLink }) => {
     const navigate = useNavigate();
