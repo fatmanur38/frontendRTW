@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import axios from "axios";
-
+const apiURL = import.meta.env.VITE_API_URL;
 const EditQuestionPackageStore = create((set) => ({
     selectedPackage: null,
     isPopupOpen: false,
@@ -23,10 +23,11 @@ const EditQuestionPackageStore = create((set) => ({
         error: null,
     })),
 
+
     fetchQuestionPackageById: async (id) => {
         set({ isLoading: true });
         try {
-            const response = await axios.get(`http://localhost:4000/api/question-packages/${id}`, { withCredentials: true });
+            const response = await axios.get(`${apiURL}/api/question-packages/${id}`, { withCredentials: true });
             set({ selectedPackage: response.data.data, isLoading: false });
         } catch (error) {
             set({ error: "Failed to fetch question package", isLoading: false });
@@ -63,7 +64,7 @@ const EditQuestionPackageStore = create((set) => ({
         }));
     },
 
-    
+
 
     // Save or create a package (POST for new, PUT for existing)
     savePackage: async (id, packageData, navigate) => {
@@ -71,12 +72,12 @@ const EditQuestionPackageStore = create((set) => ({
         try {
             if (id === "new" || !id) {
                 // POST request to create a new package
-                await axios.post("http://localhost:4000/api/question-packages", packageData, { withCredentials: true });
+                await axios.post(`${apiURL}/api/question-packages`, packageData, { withCredentials: true });
                 navigate("/manage-question-packages");
             } else {
                 // PUT request to update an existing package
                 console.log("imdat")
-                await axios.put(`http://localhost:4000/api/question-packages/${id}`, packageData, { withCredentials: true });
+                await axios.put(`${apiURL}/api/question-packages/${id}`, packageData, { withCredentials: true });
                 navigate("/manage-question-packages");
             }
             set({ isLoading: false });

@@ -74,7 +74,7 @@ const useQuestionStore = create((set) => ({
     // Fetch a single question package by ID
     fetchQuestionPackageById: async (id) => {
         try {
-            const response = await axios.get(`http://localhost:4000/api/question-packages/${id}`);
+            const response = await axios.get(`${apiURL}/api/question-packages/${id}`);
             console.log("Fetched question package:", response.data);
 
             // Here, you can store the specific package data into Zustand for use in the manage page
