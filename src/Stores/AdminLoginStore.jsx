@@ -21,13 +21,17 @@ const useAdminLoginStore = create((set) => ({
             const response = await axios.post(`${apiURL}/api/auth/login`, {
                 email,
                 password,
-            });
+            },
+            {
+                withCredentials: true, // Enable sending cookies with the request
+            }
+        );
 
             console.log("Login response:", response);
 
             // Store token in cookies
-            Cookies.set('authToken', response.data.token, { expires: 1 }); // Expires in 1 day
-
+           // Cookies.set('authToken', response.data.token, { expires: 1 }); // Expires in 1 day
+            
             // Add a slight delay to ensure the cookie is set
             setTimeout(() => {
                 // Clear form state
