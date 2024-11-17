@@ -2,11 +2,20 @@ import React, { useEffect, useState } from 'react';
 import { IoMdAdd } from 'react-icons/io';
 import useInterviewStore from '../Stores/InterviewListStore';
 import InterviewCard from '../components/InterviewCard';
-import CreateInterviewPopup from '../components/CreateInterviewPopUp'
+import CreateInterviewPopup from '../components/CreateInterviewPopUp';
 
 const InterviewList = () => {
     const { interviews, fetchInterviews, isLoading, error } = useInterviewStore();
     const [isPopupOpen, setIsPopupOpen] = useState(false);
+
+    // Helper function to determine isPublished status
+    const processInterviews = (interviews) => {
+        const today = new Date();
+        return interviews.map((interview) => ({
+            ...interview,
+            isPublished: new Date(interview.expireDate) > today,
+        }));
+    };
 
     useEffect(() => {
         fetchInterviews();
@@ -17,6 +26,8 @@ const InterviewList = () => {
 
     if (isLoading) return <p>Loading...</p>;
     if (error) return <p className="text-red-500">{error}</p>;
+
+    const processedInterviews = Array.isArray(interviews) ? processInterviews(interviews) : [];
 
     return (
         <div className="relative p-8 bg-gray-100 min-h-screen">
@@ -31,8 +42,8 @@ const InterviewList = () => {
                 </button>
             </div>
             <div className="flex flex-wrap justify-start">
-                {Array.isArray(interviews) && interviews.length > 0 ? (
-                    interviews.map((interview) => (
+                {processedInterviews.length > 0 ? (
+                    processedInterviews.map((interview) => (
                         <InterviewCard
                             key={interview._id}
                             _id={interview._id}

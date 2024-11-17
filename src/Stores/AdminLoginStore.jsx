@@ -2,29 +2,49 @@ import { create } from 'zustand';
 import axios from 'axios';
 import Cookies from 'js-cookie'; // Import js-cookie
 
+
+
 const useAdminLoginStore = create((set) => ({
     email: '',
     password: '',
     error: '',
+    isLoading: false, // Add a loading state for better UX
 
-    login: async ({ email, password }) => {  // Accept email and password as arguments
+    login: async ({ email, password, navigate }) => { // Accept email, password, and navigate
         const apiURL = import.meta.env.VITE_API_URL; // Adjust to your API URL
+
+        set({ isLoading: true, error: '' }); // Set loading state and clear previous errors
+
         try {
-            console.log('email:', email);
-            console.log('password:', password);
+            console.log('Attempting login with email:', email);
+
             const response = await axios.post(`${apiURL}/api/auth/login`, {
-                email: email,  // Use the email from the form
-                password: password, // Use the password from the form
+                email,
+                password,
             });
 
-            console.log("response:", response);
-            Cookies.set('authToken', response.data.token, { expires: 1 }); // Expires in 7 days
+            console.log("Login response:", response);
 
-            set({ email: '', password: '', error: '' }); // Clear the store state after login
+            // Store token in cookies
+            Cookies.set('authToken', response.data.token, { expires: 1 }); // Expires in 1 day
+
+            // Add a slight delay to ensure the cookie is set
+            setTimeout(() => {
+                // Clear form state
+                set({ email: '', password: '', error: '', isLoading: false });
+
+                // Navigate to the next page
+                navigate('/manage-question-packages');
+            }, 100); // Adjust timeout if needed
+
         } catch (error) {
-            set({ error: 'Invalid email or password' });
+            console.error('Login failed:', error.message);
+            set({
+                error: 'Invalid email or password',
+                isLoading: false, // Stop loading on error
+            });
         }
-    }
+    },
 }));
 
 export default useAdminLoginStore;

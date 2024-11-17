@@ -63,16 +63,21 @@ const EditQuestionPackageStore = create((set) => ({
         }));
     },
 
+    
+
     // Save or create a package (POST for new, PUT for existing)
-    savePackage: async (id, packageData) => {
+    savePackage: async (id, packageData, navigate) => {
         set({ isLoading: true });
         try {
             if (id === "new" || !id) {
                 // POST request to create a new package
                 await axios.post("http://localhost:4000/api/question-packages", packageData, { withCredentials: true });
+                navigate("/manage-question-packages");
             } else {
                 // PUT request to update an existing package
+                console.log("imdat")
                 await axios.put(`http://localhost:4000/api/question-packages/${id}`, packageData, { withCredentials: true });
+                navigate("/manage-question-packages");
             }
             set({ isLoading: false });
         } catch (error) {

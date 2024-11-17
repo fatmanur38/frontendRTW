@@ -139,8 +139,7 @@ const EditSinglePackage = () => {
             questions: formattedQuestions, // Use formatted questions
         };
 
-        savePackage(id, updatedPackage); // Send updated package to the store's savePackage function
-        navigate("/manage-question-packages"); // Redirect to the question package list
+        savePackage(id, updatedPackage, navigate); // Send updated package to the store's savePackage function
     };
     const handleDeleteQuestion = (index) => {
         const updatedQuestions = [...questions];

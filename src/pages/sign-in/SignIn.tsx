@@ -108,12 +108,11 @@ export default function SignIn() {
     const payload = {
       email: dataEmail,
       password: dataPassword,
+      navigate: navigate,
     };
 
     // Call the store to login
     login(payload);
-
-    navigate('/manage-question-packages');
 
   };
 

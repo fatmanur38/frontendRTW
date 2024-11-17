@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { FaTrash, FaPen } from "react-icons/fa";
 import { IoMdAdd } from "react-icons/io";
 import useQuestionPackageStore from "../Stores/ManageQuestionPackages/ManageQuestionPackagesStore";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 const ManageQuestionPackages = () => {
     const {
@@ -14,26 +14,24 @@ const ManageQuestionPackages = () => {
     } = useQuestionPackageStore();
 
     const navigate = useNavigate();
+    const location = useLocation();
 
     useEffect(() => {
         fetchQuestionPackages();
-    }, [fetchQuestionPackages]);
+    }, [fetchQuestionPackages, location.pathname]);
 
-    // Handle delete when trash icon is clicked
     const handleDelete = (id) => {
         if (window.confirm("Are you sure you want to delete this package?")) {
             deleteQuestionPackage(id);
         }
     };
 
-    // Handle edit when pen icon is clicked
     const handleEdit = (id) => {
-        navigate(`/manage/${id}`); // Navigate to the edit page
+        navigate(`/manage/${id}`);
     };
 
-    // Handle add when IoMdAdd icon is clicked
     const handleAdd = () => {
-        navigate("/manage/new"); // Navigate to a new page for adding a new package
+        navigate("/manage/new");
     };
 
     return (
@@ -42,9 +40,9 @@ const ManageQuestionPackages = () => {
                 <div className="flex justify-between items-center mb-6">
                     <h1 className="text-xl font-bold mb-4" style={{ color: '#317471' }}>Manage Question Package</h1>
                     <IoMdAdd
-                        className="text-4xl cursor-pointer hover:bg-yellow-200" // Lighter yellow
+                        className="text-4xl cursor-pointer hover:bg-yellow-200 transition-all duration-300" // Lighter yellow with transition
                         style={{ color: '#317471' }}
-                        onClick={handleAdd} // Navigate to new package creation
+                        onClick={handleAdd}
                     />
                 </div>
 
@@ -62,19 +60,22 @@ const ManageQuestionPackages = () => {
                     </thead>
                     <tbody>
                         {questionPackages.map((packageData, index) => (
-                            <tr key={packageData._id} className="border-t">
+                            <tr
+                                key={packageData._id}
+                                className="border-t hover:bg-green-100 transition-colors duration-200"
+                            >
                                 <td className="p-2 text-lg" style={{ color: '#317471' }}>{index + 1}</td>
                                 <td className="p-2 text-lg" style={{ color: '#317471' }}>{packageData.title}</td>
                                 <td className="p-2 text-lg" style={{ color: '#317471' }}>{packageData.questionCount}</td>
                                 <td className="p-2">
                                     <button
-                                        className="text-green-500 text-lg mr-4 hover:text-green-700"
+                                        className="text-green-500 text-lg mr-4 hover:text-green-700 hover:animate-spinSlow"
                                         onClick={() => handleEdit(packageData._id)}
                                     >
                                         <FaPen />
                                     </button>
                                     <button
-                                        className="text-yellow-400 text-lg hover:text-yellow-600" // Lighter yellow
+                                        className="text-yellow-400 text-lg hover:text-yellow-600 hover:animate-shake"
                                         onClick={() => handleDelete(packageData._id)}
                                     >
                                         <FaTrash />
