@@ -26,10 +26,10 @@ const InterviewCard = ({ _id, title, totalCandidates, onHoldCandidates, isPublis
         // Fetch and log interview details by link
         const userData = await getInterviewByLink(interviewLink);
         console.log("User Data:", userData);
-        navigate('/video-collection', { state: { userData } });
+        navigate('/video-collection', { state: { userData, questions, title } });
     };
     const handleCopyLink = () => {
-        navigator.clipboard.writeText(interviewLink);
+        navigator.clipboard.writeText("https://user-frontend-rtw.vercel.app/interview/"+interviewLink);
         alert('Link copied to clipboard');
     };
 

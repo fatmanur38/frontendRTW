@@ -1,8 +1,27 @@
 // components/AdminLayout.js
 import React from 'react';
-import { Outlet } from 'react-router-dom';
+import { Outlet, useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 const AdminLayout = () => {
+    const apiURL = import.meta.env.VITE_API_URL;
+    const navigate = useNavigate();
+
+    const handleLogout = async () => {
+        try {
+            // Send request to logout endpoint
+            await axios.post(`${apiURL}/api/auth/logout`, {}, { withCredentials: true });
+
+            // Clear any remaining cookies on the client side (e.g., js-cookie or document.cookie if necessary)
+            document.cookie = "token=; Max-Age=-99999999; path=/;";
+
+            // Redirect to the sign-in page
+            navigate('/signin');
+        } catch (error) {
+            console.error('Error during logout:', error);
+        }
+    };
+
     return (
         <div className="flex min-h-screen bg-gray-100">
             {/* Sidebar */}
@@ -33,7 +52,12 @@ const AdminLayout = () => {
                 {/* Header */}
                 <div className="flex justify-between items-center mb-4 border-b-2 border-gray-300 pb-4">
                     <h1 className="text-xl font-semibold">Remote-Tech Admin Page</h1>
-                    <button className="bg-amber-300 hover:bg-amber-500 text-white px-4 py-2 rounded-md">Log Out</button>
+                    <button
+                        onClick={handleLogout}
+                        className="bg-amber-300 hover:bg-amber-500 text-white px-4 py-2 rounded-md"
+                    >
+                        Log Out
+                    </button>
                 </div>
 
                 {/* Outlet will render the nested routes */}

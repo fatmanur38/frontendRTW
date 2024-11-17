@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import useUserStore from '../Stores/useUserInterviewStore';
-import { MdOutlineVerified } from 'react-icons/md';
-import { MdOutlineError } from 'react-icons/md'; // Error icon
+import { MdOutlineVerified, MdOutlineError } from 'react-icons/md';
+import { useEffect } from 'react';
 
 const VideoCard = ({ name, surname, videoUrl, onClick }) => (
     <div
@@ -19,10 +19,33 @@ const VideoCard = ({ name, surname, videoUrl, onClick }) => (
 );
 
 const VideoDetail = ({ videoData, onBack }) => {
+    const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+    const [fade, setFade] = useState(false);
     const { status, note, setStatus, setNote, saveData } = useUserStore();
 
+    const handleNextQuestion = () => {
+        if (currentQuestionIndex < videoData.questions.length - 1) {
+            setFade(true);
+            setTimeout(() => {
+                setCurrentQuestionIndex(currentQuestionIndex + 1);
+                setFade(false);
+            }, 300);
+        }
+    };
+
+    const handlePreviousQuestion = () => {
+        if (currentQuestionIndex > 0) {
+            setFade(true);
+            setTimeout(() => {
+                setCurrentQuestionIndex(currentQuestionIndex - 1);
+                setFade(false);
+            }, 300);
+        }
+    };
+
     const handleSave = () => {
-        saveData(videoData._id); // Pass the user's ID to the save function
+        console.log("Saving for userId:", videoData.userId); // Log the userId
+        saveData(videoData.userId);
     };
 
     return (
@@ -42,10 +65,35 @@ const VideoDetail = ({ videoData, onBack }) => {
                         {videoData.name} {videoData.surname}
                     </h3>
                     <div className="bg-gray-100 p-4 rounded-lg space-y-2">
-                        <h4 className="font-medium">Questions:</h4>
-                        {videoData.question.map((q, index) => (
-                            <p key={index} className="text-gray-600">- {q.question}</p>
-                        ))}
+                        <h4 className="font-medium">Question {currentQuestionIndex + 1}:</h4>
+                        {videoData.questions && videoData.questions.length > 0 ? (
+                            <div
+                                className={`transition-opacity duration-300 ${fade ? 'opacity-0' : 'opacity-100'
+                                    }`}
+                            >
+                                <p className="text-gray-600 text-lg">
+                                    {videoData.questions[currentQuestionIndex]?.question || "No question text available"}
+                                </p>
+                            </div>
+                        ) : (
+                            <p className="text-gray-600">No questions available.</p>
+                        )}
+                        <div className="flex justify-between mt-4">
+                            <button
+                                onClick={handlePreviousQuestion}
+                                disabled={currentQuestionIndex === 0}
+                                className="px-4 py-2 bg-gray-300 rounded-md hover:bg-gray-400 disabled:opacity-50"
+                            >
+                                Previous
+                            </button>
+                            <button
+                                onClick={handleNextQuestion}
+                                disabled={currentQuestionIndex === videoData.questions.length - 1}
+                                className="px-4 py-2 bg-gray-300 rounded-md hover:bg-gray-400 disabled:opacity-50"
+                            >
+                                Next
+                            </button>
+                        </div>
                     </div>
                     <textarea
                         value={note}
@@ -60,9 +108,6 @@ const VideoDetail = ({ videoData, onBack }) => {
                     <label className="font-medium">Status:</label>
                     <SwitchButton isOn={status} handleToggle={() => setStatus(!status)} />
                 </div>
-
-            </div>
-            <div className="flex justify-between items-center mt-4">
                 <button
                     onClick={onBack}
                     className="w-32 px-6 py-3 bg-gray-300 rounded-full hover:bg-gray-400"
@@ -79,13 +124,16 @@ const VideoDetail = ({ videoData, onBack }) => {
         </div>
     );
 };
+
 const VideoCollection = () => {
     const location = useLocation();
-    const { userData } = location.state || { userData: [] };
+    const { userData = [], title = 'Video Collection', questions = [] } = location.state || {};
     const [selectedVideo, setSelectedVideo] = useState(null);
-
+    console.log("questions:", questions); // Log the questions
     const handleCardClick = (videoData) => {
-        setSelectedVideo(videoData);
+        const videoQuestions = questions; // Assume all questions are related for now
+        setSelectedVideo({ ...videoData, questions: videoQuestions });
+        console.log("Clicked videoData with questions:", { ...videoData, questions: videoQuestions });
     };
 
     const handleBack = () => {
@@ -94,7 +142,7 @@ const VideoCollection = () => {
 
     return (
         <div className="p-8">
-            <h1 className="text-2xl font-bold mb-6">Backend Interview Video Collection</h1>
+            <h1 className="text-2xl font-bold mb-6">{title}</h1>
             {selectedVideo ? (
                 <VideoDetail videoData={selectedVideo} onBack={handleBack} />
             ) : (
@@ -158,18 +206,17 @@ const PopupSwitchNotification = () => {
                 {saveStatus === 'success' ? (
                     <>
                         <MdOutlineVerified className="text-green-500 text-3xl" />
-                        <p className="text-2xl font-medium text-green-500">Başarıyla kaydedildi</p>
+                        <p className="text-2xl font-medium text-green-500">Successfully saved</p>
                     </>
                 ) : (
                     <>
                         <MdOutlineError className="text-red-500 text-3xl" />
-                        <p className="text-2xl font-medium text-red-500">Kaydedilemedi</p>
+                        <p className="text-2xl font-medium text-red-500">Save failed</p>
                     </>
                 )}
             </div>
         </div>
     );
 };
-
 
 export default VideoCollection;

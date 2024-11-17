@@ -10,16 +10,16 @@ const useInterviewStore = create((set) => ({
 
     // Action to fetch interview by link
     getInterviewByLink: async (interviewLink) => {
-        console.log("Interview link:", `${apiURL}/interviews/link/${interviewLink}`);
         try {
             const resp = await axios.get(`${apiURL}/interviews/link/${interviewLink}`);
             const interview = resp.data.interview;
-
+            console.log("Interview:", interview); // Log for debugging
             // Extract user's name and video URL
             const usersData = interview.users.map(user => ({
                 name: user.name,
                 surname: user.surname,
                 videoUrl: user.videoUrl,
+                userId: user._id,
             }));
 
             // Store the extracted users data in the Zustand state
