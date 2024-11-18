@@ -1,27 +1,33 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import useUserStore from '../Stores/useUserInterviewStore';
 import { MdOutlineVerified, MdOutlineError } from 'react-icons/md';
-import { useEffect } from 'react';
 
-const VideoCard = ({ name, surname, videoUrl, onClick }) => (
+const VideoCard = ({ name, surname, videoUrl, note, status, onClick }) => (
     <div
         onClick={onClick}
-        className="bg-white shadow-md rounded-lg p-4 w-[250px] h-[180px] flex flex-col items-center m-4 cursor-pointer"
+        className="bg-white shadow-md rounded-lg p-4 w-[250px] h-[220px] flex flex-col items-center m-4 cursor-pointer"
     >
-        <div className="bg-gray-200 w-full h-full rounded-lg flex items-center justify-center relative">
+        <div className="bg-gray-200 w-full h-[120px] rounded-lg flex items-center justify-center relative">
             <span className="text-5xl text-gray-500">▶️</span>
         </div>
         <h3 className="text-center font-semibold mt-2">
             {name} {surname}
         </h3>
+        <p className="text-center text-gray-500 text-sm mt-2">{note || 'No notes available'}</p>
+        <p
+            className={`text-center font-medium mt-2 ${status === 'active' ? 'text-green-500' : 'text-red-500'}`}
+        >
+            {status === 'active' ? 'İzlendi' : 'Bekliyor'}
+        </p>
     </div>
 );
-
 const VideoDetail = ({ videoData, onBack }) => {
+    const { setStatus, saveData } = useUserStore();
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
     const [fade, setFade] = useState(false);
-    const { status, note, setStatus, setNote, saveData } = useUserStore();
+    const [note, setNote] = useState(videoData.note || ''); // Initialize with the passed note
+    const [status, setLocalStatus] = useState(videoData.userStatus === 'active'); // Initialize based on userStatus
 
     const handleNextQuestion = () => {
         if (currentQuestionIndex < videoData.questions.length - 1) {
@@ -43,14 +49,19 @@ const VideoDetail = ({ videoData, onBack }) => {
         }
     };
 
-    const handleSave = () => {
-        console.log("Saving for userId:", videoData.userId); // Log the userId
-        saveData(videoData.userId);
+    const handleSave = async () => {
+        console.log("Saving for userId:", videoData.userId);
+        await saveData(videoData.userId, note); // Save data for the user along with the note
+        setStatus(status); // Save the current status in the global state
+    };
+
+    const handleToggleSwitch = () => {
+        setLocalStatus(!status); // Toggle the local status
     };
 
     return (
         <div className="bg-gray-50 shadow-md rounded-lg p-6 flex flex-col space-y-4">
-            <PopupSwitchNotification isOn={status} handleToggle={() => setStatus(!status)} />
+            <PopupSwitchNotification />
 
             <div className="flex flex-row space-x-6">
                 <div className="w-1/2 flex items-center justify-center relative">
@@ -106,19 +117,19 @@ const VideoDetail = ({ videoData, onBack }) => {
             <div className="flex justify-between items-center mt-4">
                 <div className="flex items-center space-x-2">
                     <label className="font-medium">Status:</label>
-                    <SwitchButton isOn={status} handleToggle={() => setStatus(!status)} />
+                    <SwitchButton isOn={status} handleToggle={handleToggleSwitch} />
                 </div>
                 <button
                     onClick={onBack}
                     className="w-32 px-6 py-3 bg-gray-300 rounded-full hover:bg-gray-400"
                 >
-                    Back
+                    Geri Git
                 </button>
                 <button
                     onClick={handleSave}
                     className="w-32 px-6 py-3 bg-gray-300 rounded-full shadow-md hover:bg-gray-400"
                 >
-                    Save
+                    Kaydet
                 </button>
             </div>
         </div>
@@ -127,13 +138,19 @@ const VideoDetail = ({ videoData, onBack }) => {
 
 const VideoCollection = () => {
     const location = useLocation();
-    const { userData = [], title = 'Video Collection', questions = [] } = location.state || {};
+    const { userData = [], title = 'Video Collection', questions = [], userNotes = [], userStatus = [] } = location.state || {};
     const [selectedVideo, setSelectedVideo] = useState(null);
-    console.log("questions:", questions); // Log the questions
-    const handleCardClick = (videoData) => {
+    console.log("userStatus:", userStatus);
+
+
+
+
+    const handleCardClick = (videoData, note, userStatus) => {
         const videoQuestions = questions; // Assume all questions are related for now
-        setSelectedVideo({ ...videoData, questions: videoQuestions });
-        console.log("Clicked videoData with questions:", { ...videoData, questions: videoQuestions });
+        setSelectedVideo({ ...videoData, questions: videoQuestions, note, userStatus });
+        console.log("Clicked videoData with questions:", { ...videoData, questions: videoQuestions, note, userStatus });
+
+
     };
 
     const handleBack = () => {
@@ -153,7 +170,10 @@ const VideoCollection = () => {
                             name={user.name}
                             surname={user.surname}
                             videoUrl={user.videoUrl}
-                            onClick={() => handleCardClick(user)}
+                            note={userNotes[index]} // Pass the corresponding note
+                            status={userStatus[index]?.status || 'inactive'} // Pass corresponding status
+                            onClick={() => handleCardClick(user, userNotes[index], userStatus[index].status)} // Pass note when clicked
+
                         />
                     ))}
                 </div>
@@ -181,21 +201,16 @@ const PopupSwitchNotification = () => {
 
     useEffect(() => {
         if (saveStatus) {
-            // Show the popup
             setVisible(true);
-
-            // Hide the popup after 3 seconds
             const timer = setTimeout(() => {
                 setVisible(false);
-                setSaveStatus(null); // Reset the save status after hiding
+                setSaveStatus(null);
             }, 3000);
-
-            // Cleanup timer on unmount
             return () => clearTimeout(timer);
         }
     }, [saveStatus, setSaveStatus]);
 
-    if (!saveStatus) return null; // Don't render if there's no status
+    if (!saveStatus) return null;
 
     return (
         <div

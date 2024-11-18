@@ -6,13 +6,12 @@ import useInterviewStore from '../Stores/InterviewListStore';
 import QuestionListPopUp from './QuestionListPopUp';
 import useInterviewCardStore from '../Stores/InterviewCardStore';
 
-const InterviewCard = ({ _id, title, totalCandidates, onHoldCandidates, isPublished, questions, interviewLink }) => {
+const InterviewCard = ({ _id, title, totalCandidates, onHoldCandidates, isPublished, questions, interviewLink, userNotes, userStatus }) => {
     const navigate = useNavigate();
     const { deleteInterview } = useInterviewStore();
     const [isQuestionPopupOpen, setIsQuestionPopupOpen] = useState(false);
     const { getInterviewByLink } = useInterviewCardStore(); // Access getInterviewByLink action
-
-
+    console.log("user status", userStatus);
     const handleDelete = () => {
         if (window.confirm('Are you sure you want to delete this interview?')) {
             deleteInterview(_id);
@@ -22,14 +21,24 @@ const InterviewCard = ({ _id, title, totalCandidates, onHoldCandidates, isPublis
     const handleOpenQuestions = () => {
         setIsQuestionPopupOpen(true);
     };
+
     const handleNavigateToCandidateInterview = async () => {
         // Fetch and log interview details by link
         const userData = await getInterviewByLink(interviewLink);
         console.log("User Data:", userData);
-        navigate('/video-collection', { state: { userData, questions, title } });
+        navigate('/video-collection', {
+            state: {
+                userData,
+                questions,
+                title,
+                userNotes, // Include userNotes in the state
+                userStatus
+            }
+        });
     };
+
     const handleCopyLink = () => {
-        navigator.clipboard.writeText("https://user-frontend-rtw.vercel.app/interview/"+interviewLink);
+        navigator.clipboard.writeText("https://user-frontend-rtw.vercel.app/interview/" + interviewLink);
         alert('Link copied to clipboard');
     };
 
@@ -63,8 +72,6 @@ const InterviewCard = ({ _id, title, totalCandidates, onHoldCandidates, isPublis
                         <p className="text-xl text-[#004d61]">{onHoldCandidates}</p>
                     </div>
                 </div>
-
-
 
                 {/* Bottom Section for Status and Action Button */}
                 <div className="absolute bottom-0 left-0 right-0 p-4 border-t-2 border-[#004d61] bg-[#ffffff] flex justify-between items-center">

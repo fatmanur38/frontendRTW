@@ -9,10 +9,10 @@ const useUserStore = create((set) => ({
     setStatus: (value) => set({ status: value }),
     setNote: (value) => set({ note: value }),
     setSaveStatus: (status) => set({ saveStatus: status }), // Sets save status
-    saveData: async (userId) => {
+    saveData: async (userId, note) => {
         try {
             const statusText = useUserStore.getState().status ? 'active' : 'inactive';
-            const note = useUserStore.getState().note;
+
             const response = await axios.put(`${apiURL}/users/${userId}`, {
                 status: statusText,
                 note: note
