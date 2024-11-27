@@ -44,3 +44,12 @@ npm install
 ```bash
 npm run dev
 ```
+
+## Canlı Demo
+
+Projeyi canlı olarak aşağıdaki bağlantıdan inceleyebilirsiniz:
+
+https://frontend-iview-rtw.vercel.app/signin
+
+email = admin@example.com
+password = admin123
